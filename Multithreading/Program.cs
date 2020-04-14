@@ -1,36 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Multithreading.Interface;
 
 namespace Multithreading
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             CharFinder charFinder = new CharFinder();
+            StopwatchAnalyzer analyzer = new StopwatchAnalyzer();
 
             Console.WriteLine("Thread class\n");
-            IMultihtreadable multihtreadable = new MyFactoryThread();
-            multihtreadable.Execute(charFinder);
+            IMultithreadable multithreadable = new MyFactoryThread();
+            analyzer.Analyze(multithreadable.Execute(charFinder));
 
             Console.WriteLine("\nTasks\n");
-            multihtreadable = new MyFactoryTask();
-            multihtreadable.Execute(charFinder);
+            multithreadable = new MyFactoryTask();
+            analyzer.Analyze(multithreadable.Execute(charFinder));
 
             Console.WriteLine("\nParallel class\n");
-            multihtreadable = new MyParallel();
-            multihtreadable.Execute(charFinder);
+            multithreadable = new MyParallel();
+            analyzer.Analyze(multithreadable.Execute(charFinder));
 
             Console.WriteLine("\nasync / await\n");
-            multihtreadable = new MyAsync();
-            multihtreadable.Execute(charFinder);
+            MyAsync myAsync = new MyAsync();
+            analyzer.Analyze(myAsync.Execute(charFinder).Result);
 
             Console.ReadLine();
         }
+
     }
 }

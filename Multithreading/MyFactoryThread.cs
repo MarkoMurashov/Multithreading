@@ -1,33 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
 using Multithreading.Interface;
 
 namespace Multithreading
 {
-    public class MyFactoryThread : IMultihtreadable
+    public class MyFactoryThread : IMultithreadable
     {
-        public void Execute(CharFinder finder)
+        public Dictionary<int, Stopwatch> Execute(CharFinder finder)
         {
-            Thread mainThread = new Thread(finder.CalculateCharCount);
-            mainThread.Start(100);
+            Dictionary<int, Stopwatch> stopwatchers = new Dictionary<int, Stopwatch>();
 
-            mainThread = new Thread(finder.CalculateCharCount);
-            mainThread.Start(500);
+            StartCalculate(finder, stopwatchers, 100);
+            StartCalculate(finder, stopwatchers, 500);
+            StartCalculate(finder, stopwatchers, 5000);
+            StartCalculate(finder, stopwatchers, 50000);
+            StartCalculate(finder, stopwatchers, 500000);
 
-            mainThread = new Thread(finder.CalculateCharCount);
-            mainThread.Start(5000);
+            return stopwatchers;
+        }
 
-            mainThread = new Thread(finder.CalculateCharCount);
-            mainThread.Start(50000);
+        private void StartCalculate(CharFinder finder, Dictionary<int, Stopwatch> stopwatchers, int arrLength)
+        {
+            Stopwatch stopwatch = new Stopwatch();
 
-            mainThread = new Thread(finder.CalculateCharCount);
-            mainThread.Start(500000);
+            finder.ResetValue();
 
-            mainThread.Join();
+            stopwatch.Start();
+            for (int j = 0; j < arrLength; j++)
+            {
+                new Thread(finder.GetCharCount).Start(finder.strArr[j]);
+            }
+            stopwatch.Stop();
+            stopwatchers.Add(arrLength, stopwatch);
         }
     }
 }
